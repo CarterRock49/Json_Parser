@@ -89,7 +89,7 @@ TEST_CASE("Testing my JSON Parser"){
 	const string fileDIR1 = "JsonObject1.json";
 	const string fileDIR2 = "JsonObject2.json";
 
-	//note the requirements for the assignment call for ten test cases and I thought the default test case we were given were adequate
+	//note the requirements for the assignment calls for ten test cases and I thought the default test cases were adequate
 	SUBCASE("testing parsing of empty JSON object") {
 		// Open the file
 		CHECK(jp.initialize(fileDIR1) == true);
