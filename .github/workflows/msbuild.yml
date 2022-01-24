@@ -1,0 +1,37 @@
+name: MSBuild
+
+on: [push]
+
+env:
+  SOLUTION_FILE_PATH: .
+  BUILD_CONFIGURATION: Release
+  EXE_DIR: ./x64/Release
+  TEST_DATA_FILES: ./TestData
+
+jobs:
+  build-and-test:
+    runs-on: windows-2022
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+
+    # Star of testing....
+    # https://stackoverflow.com/questions/57968497/how-do-i-set-an-env-var-with-a-bash-expression-in-github-actions
+    - name: Get executable name
+      run: echo "EXE=$(dir ${{env.EXE_DIR}}/*.exe | select BaseName -ExpandProperty Name)" >> $env:GITHUB_ENV
+
+    - name: Copy executable to root of project
+      run: cp ${{env.EXE_DIR}}/*.exe .
+    
+    - name: Copy test data files to root of project too
+      run: cp ${{env.TEST_DATA_FILES}}/* .
+
+    - name: Run executable with tests
+      run: ./${{env.EXE}}
