@@ -1,6 +1,7 @@
 # JsonParser
-&lt;place your build badge here&gt;
+&lt; https://github.com/CarterRock49/Json_Parser/actions/workflows/msbuild.yml/badge.svg &gt;
 
 The shell of the JSON Parser project.
 
-Todo: Add description of your project.
+This project is a program that opens and takes in a JSON file and parses it. Doesn't work with JSON arrays or objects.
+
