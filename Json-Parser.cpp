@@ -1,24 +1,14 @@
-// JsonParse_1.cpp : This file contains the 'main' function. Program execution begins and ends there.
-// Objective:
-// {
-// }
-// ... and ...
-//{
-//	"Name": "BitCoin",
-//	"Symbol" : "BTC",
-//}
-//
-//
-
 #include <iostream>
 #include <fstream>
 #include <cctype>
 #include <string>
+#include <sstream> 
 using namespace std;
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest.h"
 
+const string DATA_FILE_PATH = "Testdata//";
 const int ARRSIZE = 100;
 ////////////////////////////
 class JsonParser {
@@ -30,7 +20,7 @@ public:
 	string names[ARRSIZE];
 	string values[ARRSIZE];
 	//member function takes in file name as a parameter, opens the file, and returns if it was successful
-	bool initialize(string fileDIR) {
+	bool OpenFile(string fileDIR) {
 		//opens the file that the fileDIR varible has stored in it
 		Json.open(fileDIR);
 		//checks to make sure it was successful
@@ -42,7 +32,7 @@ public:
 		}
 	}
 
-	bool objectparser() {
+	bool ParseJson() {
 		string entry;
 		char charentry;
 		int index = 0;
@@ -72,7 +62,13 @@ public:
 			// this should cover all other values than strings not including arrays of json values or objects
 			}
 			else {
-				getline(Json, entry, ',');
+				//this is the only part of the main code that has changed since last week test cases and the #include <sstream> not included
+				//this grabs the entire value portion, this is done to not accdentially grab the } at the end of the file although downside, doing it grabs the ,
+				getline(Json, entry);
+				//this puts entry into a stream
+				stringstream ss(entry);
+				//this removes the , but because we only grabbed this line before it doesn't have the possiblity to grabs the final }
+				getline(ss, entry, ',');
 				values[index] = entry;
 			}
 			//interates on the variable 'index' to change the parallel array's row
@@ -92,27 +88,55 @@ TEST_CASE("Testing my JSON Parser"){
 	//note the requirements for the assignment calls for ten test cases and I thought the default test cases were adequate
 	SUBCASE("testing parsing of empty JSON object") {
 		// Open the file
-		CHECK(jp.initialize(fileDIR1) == true);
+		CHECK(jp.OpenFile(DATA_FILE_PATH + "JsonObject3a.json") == true);
 
 		// Invoke the parsing process
-		CHECK(jp.objectparser() == true);
+		CHECK(jp.ParseJson() == true);
 
 		// Validate the parsed JSON object
-		CHECK(jp.names[0] == "");
-		CHECK(jp.values[0] == "");
+		CHECK(jp.names[0] == "Rank");
+		CHECK(jp.names[1] == "Name");
+		CHECK(jp.names[2] == "Symbol");
+		CHECK(jp.names[3] == "Market Cap");
+		CHECK(jp.values[0] == "3");
+		CHECK(jp.values[1] == "Binance Coin");
+		CHECK(jp.values[2] == "BNB");
+		CHECK(jp.values[3] == "90321378765");
 	}
 
 	SUBCASE("testing parsing of simple JSON object (only strings for values)") {
 		// Open the file
-		CHECK(jp.initialize(fileDIR2) == true);
+		CHECK(jp.OpenFile(DATA_FILE_PATH + "JsonObject3b.json") == true);
 
 		// Invoke the parsing process
-		CHECK(jp.objectparser() == true);
+		CHECK(jp.ParseJson() == true);
 
 		// Validate the parsed JSON object
-		CHECK(jp.names[0] == "Name");
-		CHECK(jp.names[1] == "Symbol");
-		CHECK(jp.values[0] == "BitCoin");
-		CHECK(jp.values[1] == "BTC");
+		CHECK(jp.names[0] == "Rank");
+		CHECK(jp.names[1] == "Name");
+		CHECK(jp.names[2] == "Symbol");
+		CHECK(jp.names[3] == "Market Cap");
+		CHECK(jp.values[0] == "21");
+		CHECK(jp.values[1] == "Algorand");
+		CHECK(jp.values[2] == "ALGO");
+		CHECK(jp.values[3] == "10198650050.12345");
+	}
+
+	SUBCASE("testing parsing of simple JSON object (only strings for values)") {
+		// Open the file
+		CHECK(jp.OpenFile(DATA_FILE_PATH + "JsonObject3c.json") == true);
+
+		// Invoke the parsing process
+		CHECK(jp.ParseJson() == true);
+
+		// Validate the parsed JSON object
+		CHECK(jp.names[0] == "Rank");
+		CHECK(jp.names[1] == "Name");
+		CHECK(jp.names[2] == "Symbol");
+		CHECK(jp.names[3] == "Market Cap");
+		CHECK(jp.values[0] == "0");
+		CHECK(jp.values[1] == "111 Test this 111");
+		CHECK(jp.values[2] == "TEST");
+		CHECK(jp.values[3] == "-12345.67890e-789");
 	}
 }
