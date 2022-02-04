@@ -57,7 +57,7 @@ public:
 					values[index] = entry;
 					Json.get(charentry); //gets rid of the ',' or '\n'
 				}
-				//check if the next character is for a json array
+				//check if the next character is for the start of a json array
 				else if (Json.peek() == '['){
 					Json.get(charentry); //removes [
 					Json >> ws;
