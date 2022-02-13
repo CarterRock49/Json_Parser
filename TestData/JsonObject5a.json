@@ -1,5 +1,6 @@
 {
   "Rank": 1,
+  "Active":false,
   "Name": "Bitcoin",
   "Symbol": "BTC",
   "Market Cap": [
