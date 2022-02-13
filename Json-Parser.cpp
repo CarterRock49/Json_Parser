@@ -32,7 +32,6 @@ public:
 	}
 
 	bool ParseJson() {
-		int test = 0;
 		string jsonstring;
 		string tempvalue;
 		string tempstorage;
@@ -46,11 +45,13 @@ public:
 		//this is a while loop that continues until the end of the file
 			while (!Json.eof()) {
 				Json >> ws;
-				if(Json.peek() == ','){Json.get(charentry);} //gets rid of ',' to start
+				if(Json.peek() == ','){Json.get(charentry);} //gets rid of ',' after an array
+				Json >> ws;
 				if(Json.peek() == '"'){Json.get(charentry);} //gets rid of '"' to start
+				Json >> ws;
 				if(Json.peek() == '}'){break;} // breaks on the last loop through
 				getline(Json, jsonstring, '"');	//gets the first string
-				getline(Json, tempstorage, ':'); //removes anything up to and including the colon
+				if(Json.peek() == ':'){Json.get(charentry);} //removes anything up to and including the colon
 				Json >> ws; //if the next char is a '"' thens its a string and will end with a '"' else its something else and will end with either a ',' or '\n' and the '}' or its an array
 				if (Json.peek() == '"') {
 					Json.get(charentry); //gets rid of the '"'
@@ -62,8 +63,6 @@ public:
 				}
 				//check if the next character is for the start of a json array
 				else if (Json.peek() == '['){
-					test++;
-					cout<<"\nyou are here" << test;
 					Json.get(charentry); //removes [
 					//this is a bit messy but this while loop continues until the ] is reached for the array then it uses the break statement
 					while(true){
